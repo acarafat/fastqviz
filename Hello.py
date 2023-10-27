@@ -87,7 +87,7 @@ def view_alignment(aln, fontsize="8pt", plot_width=800):
     plot_height = len(seqs)*15+50
     x_range = Range1d(0,N+1, bounds='auto')
     if N>100:
-        viewlen=100
+        viewlen=80
     else:
         viewlen=N
 
