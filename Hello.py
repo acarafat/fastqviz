@@ -5,6 +5,7 @@
 import streamlit as st
 from streamlit.logger import get_logger
 import numpy as np
+from io import StringIO
 
 from Bio.Seq import Seq
 from Bio import SeqIO
@@ -23,12 +24,26 @@ def run():
         page_icon="🧬",
     )
 
-    st.write('Input: fastq alignment')
+    st.markdown("""
+                # FastqViz
+                ### A *fastq* alignment quality visualization tool
+                
+                Please upload a fastq file to start:
+                """)
 
-    p = view_alignment('example/test.fastq')
+    uploaded_file = st.file_uploader("Choose a fast file:")
+
+    if uploaded_file is None:
+        st.write("""
+                 Here showing an example fastq file output.
+                 """)
+        p = view_alignment('example/test.fastq')
+    else:
+        stringio = StringIO(uploaded_file.getvalue().decode("utf-8"))
+        p = view_alignment(stringio)
+        
     st.bokeh_chart(p,  use_container_width=True)
 
-    st.sidebar.success("Select a demo above.")
 
 color_mapper = LinearColorMapper(
     palette='Magma256',
@@ -46,8 +61,8 @@ def view_alignment(aln, fontsize="8pt", plot_width=800):
 
     # make sequence and id lists from the aln object
     recs = [rec for rec in SeqIO.parse(aln, 'fastq')]
-    seqs = [rec.seq for rec in SeqIO.parse(aln, 'fastq')]
-    ids = [rec.id for rec in SeqIO.parse(aln, 'fastq')]
+    seqs = [rec.seq for rec in recs]
+    ids = [rec.id for rec in recs]
     text = [i for s in list(seqs) for i in s]
     colors = get_colors(recs)
     N = len(seqs[0])
