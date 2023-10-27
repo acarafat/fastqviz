@@ -4,4 +4,4 @@ pandas
 pydeck
 streamlit
 Bio
-bokeh
+bokeh==2.4.3
